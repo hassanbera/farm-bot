@@ -4,52 +4,60 @@ import time
 # Windows API yapılandırmaları
 PUL = ctypes.POINTER(ctypes.c_ulong)
 
-# Klavye girdisi
 class KeyBdInput(ctypes.Structure):
-    _fields_ = [
-        ("wVk", ctypes.c_ushort),      # Sanal tuş kodu
-        ("wScan", ctypes.c_ushort),    # Donanım tarama kodu
-        ("dwFlags", ctypes.c_ulong),   # Ek bayraklar (basma veya bırakma işlemleri)
-        ("time", ctypes.c_ulong),      # İşlem zamanı (genelde 0)
-        ("dwExtraInfo", PUL)           # Ek bilgi pointer'ı
-    ]
+    _fields_ = [("wVk", ctypes.c_ushort),
+                ("wScan", ctypes.c_ushort),
+                ("dwFlags", ctypes.c_ulong),
+                ("time", ctypes.c_ulong),
+                ("dwExtraInfo", PUL)]
 
-# Birleşik giriş türü (Union)
+class HardwareInput(ctypes.Structure):
+    _fields_ = [("uMsg", ctypes.c_ulong),
+                ("wParamL", ctypes.c_short),
+                ("wParamH", ctypes.c_ushort)]
+
+class MouseInput(ctypes.Structure):
+    _fields_ = [("dx", ctypes.c_long),
+                ("dy", ctypes.c_long),
+                ("mouseData", ctypes.c_ulong),
+                ("dwFlags", ctypes.c_ulong),
+                ("time", ctypes.c_ulong),
+                ("dwExtraInfo", PUL)]
+
 class Input_I(ctypes.Union):
-    _fields_ = [
-        ("ki", KeyBdInput)  # Klavye girdisi
-    ]
+    _fields_ = [("ki", KeyBdInput),
+                ("mi", MouseInput),
+                ("hi", HardwareInput)]
 
-# Giriş yapısı (Structure)
 class Input(ctypes.Structure):
-    _fields_ = [
-        ("type", ctypes.c_ulong),  # Girdi türü (klavye veya fare)
-        ("ii", Input_I)            # Girdi birleşimi (Union)
-    ]
+    _fields_ = [("type", ctypes.c_ulong),
+                ("ii", Input_I)]
 
+# Tuş basma ve bırakma fonksiyonları
 def press_key(hexKeyCode):
-    """
-    Belirtilen tuşa basma işlemini gerçekleştirir.
-    Args:
-        hexKeyCode: Tuşun hexadecimal kodu (örneğin, 'W' için 0x11).
-    """
-    extra = ctypes.c_ulong(0)  # Ek bilgi
-    ii_ = Input_I()  # Girdi birleşim türü
-    ii_.ki = KeyBdInput(0, hexKeyCode, 0x0008, 0, ctypes.pointer(extra))  # Tuş basma yapılandırması
-    x = Input(ctypes.c_ulong(1), ii_)  # Klavye girdisi olarak tanımlanır
-    ctypes.windll.user32.SendInput(1, ctypes.pointer(x), ctypes.sizeof(x))  # Tuş basma işlemini gönderir
+    extra = ctypes.c_ulong(0)
+    ii_ = Input_I()
+    ii_.ki = KeyBdInput(0, hexKeyCode, 0x0008, 0, ctypes.pointer(extra))
+    x = Input(ctypes.c_ulong(1), ii_)
+    ctypes.windll.user32.SendInput(1, ctypes.pointer(x), ctypes.sizeof(x))
 
 def release_key(hexKeyCode):
-    """
-    Belirtilen tuşun bırakılması işlemini gerçekleştirir.
-    Args:
-        hexKeyCode: Tuşun hexadecimal kodu.
-    """
-    extra = ctypes.c_ulong(0)  # Ek bilgi
-    ii_ = Input_I()  # Girdi birleşim türü
-    ii_.ki = KeyBdInput(0, hexKeyCode, 0x0008 | 0x0002, 0, ctypes.pointer(extra))  # Tuş bırakma yapılandırması
-    x = Input(ctypes.c_ulong(1), ii_)  # Klavye girdisi olarak tanımlanır
-    ctypes.windll.user32.SendInput(1, ctypes.pointer(x), ctypes.sizeof(x))  # Tuş bırakma işlemini gönderir
+    extra = ctypes.c_ulong(0)
+    ii_ = Input_I()
+    ii_.ki = KeyBdInput(0, hexKeyCode, 0x0008 | 0x0002, 0, ctypes.pointer(extra))
+    x = Input(ctypes.c_ulong(1), ii_)
+    ctypes.windll.user32.SendInput(1, ctypes.pointer(x), ctypes.sizeof(x))
+
+# Mouse sol tıklama fonksiyonları
+def mouse_left_click():
+    extra = ctypes.c_ulong(0)
+    mi = MouseInput(0, 0, 0, 0x0002, 0, ctypes.pointer(extra))  # Sol tuş basma
+    x = Input(ctypes.c_ulong(0), Input_I(mi=mi))
+    ctypes.windll.user32.SendInput(1, ctypes.pointer(x), ctypes.sizeof(x))
+    mi = MouseInput(0, 0, 0, 0x0004, 0, ctypes.pointer(extra))  # Sol tuş bırakma
+    x = Input(ctypes.c_ulong(0), Input_I(mi=mi))
+    ctypes.windll.user32.SendInput(1, ctypes.pointer(x), ctypes.sizeof(x))
+ # Tuş bırakma işlemini gönderir
 
 def hold_key(hexKeyCode, duration):
     """
@@ -59,5 +67,8 @@ def hold_key(hexKeyCode, duration):
         duration: Tuşun basılı kalacağı süre (saniye cinsinden).
     """
     press_key(hexKeyCode)  # Tuşa basma işlemini gerçekleştir
+    print(f"{duration} saniye boyunca tuş basılı kalacak...")
     time.sleep(duration)  # Belirtilen süre boyunca bekle
+    print(f"{duration} sanieye bekledi.")
     release_key(hexKeyCode)  # Tuşu bırakma işlemini gerçekleştir
+    print("Tuş bırakıldı.")
