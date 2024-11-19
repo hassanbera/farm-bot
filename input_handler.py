@@ -72,3 +72,25 @@ def hold_key(hexKeyCode, duration):
     print(f"{duration} sanieye bekledi.")
     release_key(hexKeyCode)  # Tuşu bırakma işlemini gerçekleştir
     print("Tuş bırakıldı.")
+    
+    
+def mouse_click(duration):
+    """
+    Belirtilen süre boyunca fare sol tıklamasını basılı tutar.
+    Args:
+        duration (float): Sol tıklamanın basılı kalacağı süre (saniye cinsinden).
+    """
+    extra = ctypes.c_ulong(0)
+    
+    # Sol tıklamayı başlat
+    mi = MouseInput(0, 0, 0, 0x0002, 0, ctypes.pointer(extra))  # Sol tuş basma
+    x = Input(ctypes.c_ulong(0), Input_I(mi=mi))
+    ctypes.windll.user32.SendInput(1, ctypes.pointer(x), ctypes.sizeof(x))
+    
+    # Belirtilen süre kadar bekle
+    time.sleep(duration)
+    
+    # Sol tıklamayı bırak
+    mi = MouseInput(0, 0, 0, 0x0004, 0, ctypes.pointer(extra))  # Sol tuş bırakma
+    x = Input(ctypes.c_ulong(0), Input_I(mi=mi))
+    ctypes.windll.user32.SendInput(1, ctypes.pointer(x), ctypes.sizeof(x))
