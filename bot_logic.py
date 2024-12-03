@@ -38,7 +38,7 @@ def bot_action():
             
                 
 
-                
+                #oldu sanki
 
     except KeyboardInterrupt:
             # Kullanıcı Ctrl+C tuşuna bastığında döngü durur
