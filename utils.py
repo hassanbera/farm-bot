@@ -1,3 +1,4 @@
+
 import time  # Zaman gecikmeleri eklemek için kullanılan modül
 
 def wait(seconds):

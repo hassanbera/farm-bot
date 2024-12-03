@@ -57,7 +57,6 @@ def mouse_left_click():
     mi = MouseInput(0, 0, 0, 0x0004, 0, ctypes.pointer(extra))  # Sol tuş bırakma
     x = Input(ctypes.c_ulong(0), Input_I(mi=mi))
     ctypes.windll.user32.SendInput(1, ctypes.pointer(x), ctypes.sizeof(x))
- # Tuş bırakma işlemini gönderir
 
 def hold_key(hexKeyCode, duration):
     """
@@ -66,14 +65,10 @@ def hold_key(hexKeyCode, duration):
         hexKeyCode: Tuşun hexadecimal kodu.
         duration: Tuşun basılı kalacağı süre (saniye cinsinden).
     """
-    press_key(hexKeyCode)  # Tuşa basma işlemini gerçekleştir
-    print(f"{duration} saniye boyunca tuş basılı kalacak...")
-    time.sleep(duration)  # Belirtilen süre boyunca bekle
-    print(f"{duration} sanieye bekledi.")
-    release_key(hexKeyCode)  # Tuşu bırakma işlemini gerçekleştir
-    print("Tuş bırakıldı.")
-    
-    
+    press_key(hexKeyCode)
+    time.sleep(duration)
+    release_key(hexKeyCode)
+
 def mouse_click(duration):
     """
     Belirtilen süre boyunca fare sol tıklamasını basılı tutar.
@@ -81,16 +76,29 @@ def mouse_click(duration):
         duration (float): Sol tıklamanın basılı kalacağı süre (saniye cinsinden).
     """
     extra = ctypes.c_ulong(0)
-    
     # Sol tıklamayı başlat
-    mi = MouseInput(0, 0, 0, 0x0002, 0, ctypes.pointer(extra))  # Sol tuş basma
+    mi = MouseInput(0, 0, 0, 0x0002, 0, ctypes.pointer(extra))
     x = Input(ctypes.c_ulong(0), Input_I(mi=mi))
     ctypes.windll.user32.SendInput(1, ctypes.pointer(x), ctypes.sizeof(x))
-    
     # Belirtilen süre kadar bekle
     time.sleep(duration)
-    
     # Sol tıklamayı bırak
-    mi = MouseInput(0, 0, 0, 0x0004, 0, ctypes.pointer(extra))  # Sol tuş bırakma
+    mi = MouseInput(0, 0, 0, 0x0004, 0, ctypes.pointer(extra))
     x = Input(ctypes.c_ulong(0), Input_I(mi=mi))
     ctypes.windll.user32.SendInput(1, ctypes.pointer(x), ctypes.sizeof(x))
+
+def mouse_move_and_click(x, y, duration=0.5):
+    """
+    Fareyi belirtilen (x, y) koordinatlarına hareket ettirir ve sol tıklama yapar.
+    """
+    ctypes.windll.user32.SetProcessDPIAware()  # DPI ölçeklendirmesi düzeltmesi
+    screen_width = ctypes.windll.user32.GetSystemMetrics(0)
+    screen_height = ctypes.windll.user32.GetSystemMetrics(1)
+
+    if 0 <= x < screen_width and 0 <= y < screen_height:
+        ctypes.windll.user32.SetCursorPos(x, y)
+        print(f"Mouse {x}, {y} koordinatına taşındı.")
+        mouse_left_click()
+        print(f"Mouse tıklaması ({x}, {y}) koordinatında gerçekleştirildi.")
+    else:
+        print(f"Hata: Koordinatlar ekran sınırları dışında ({x}, {y}).")
