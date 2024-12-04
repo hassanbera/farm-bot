@@ -8,9 +8,10 @@ if __name__ == "__main__":
 
     print("Klavye ve fare girdilerini kaydetmek için hazır.")
     print("ESC tuşuna basarak kaydı durdurabilirsiniz.")
-    time.sleep(3)
+    time.sleep(1)
     # Kayıt işlemini başlat
     recorder.start_recording()
+    
 
     # Kaydedilen girdileri bir dosyaya yaz
     file_name = "recorded_inputs.txt"
