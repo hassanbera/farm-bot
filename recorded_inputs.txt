@@ -1,8 +1,0 @@
-mouse_move_and_click(909, 1053)
-hold_key(0x04, 0.08)
-mouse_move_and_click(843, 654)
-hold_key(0x03, 0.18)
-hold_key(0x03, 0.20)
-hold_key(0x02, 0.22)
-hold_key(0x02, 0.19)
-hold_key(0x03, 0.11)

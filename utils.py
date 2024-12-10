@@ -45,7 +45,7 @@ def icy_aura():
         
 def ice_rain():
     hold_key(0x04, 0.1)
-    mouse_move_and_click(843, 654)
+    mouse_move_and_click(857, 773)
     time.sleep(1) #Alan açma denemesi
 
 def ice_air():

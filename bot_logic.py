@@ -9,7 +9,7 @@ def bot_action():
 
 
     try:
-        auto_loot=time.time()
+        
        
         
         while True:  # Sonsuz döngü
@@ -56,16 +56,21 @@ def bot_action():
             #Farma başlangıç
             
             #Savaş Başlangıcı
+            hold_key(0x07,0.2)
+            hold_key(0x05,0.2)
             icy_aura()
             icy_aura()
-            hold_key(0x05,1)
+            hold_key(0x05,2)
             ice_rain()
+            hold_key(0x3B,0.2)
             ice_rain()
             ice_rain()
             
             ice_air()
             ice_air()
+            hold_key(0x3B,0.2)
             ice_air()
+            hold_key(0x3B,0.2)
             
             time.sleep(5)
             
@@ -74,21 +79,32 @@ def bot_action():
             icy_aura()
             ice_rain()
             icy_aura()
+            hold_key(0x3B,0.2)
             ice_rain()
+            hold_key(0x3B,0.2)
             ice_rain()
             time.sleep(2)
+            hold_key(0x3B,0.2)
             icy_aura()
             ice_rain()
             ice_rain()
+            hold_key(0x3B,0.2)
             ice_rain()
+            hold_key(0x3B,0.2)
             icy_aura()
             ice_air()
             ice_rain()
+            hold_key(0x3B,0.2)
             icy_aura()
             ice_air()
-            hold_key(0x05,1)
+            hold_key(0x3D,0.2)
+            time.sleep(1)
+            hold_key(0x58,0.2)
+            hold_key(0x01,0.2)
+            
+            
             time.sleep(7)
-            #Savaş btişi
+            #Savaş btişi3
             
             #Karakter Seçimine Dönüş
             hold_key(0x01, 0.13)
@@ -100,11 +116,11 @@ def bot_action():
             mouse_move_and_click(1690, 432)
             time.sleep(2)
             mouse_move_and_click(1754, 750)
-            #Devamke
+            #Devamke213
             time.sleep(3)
              
-                
+            
 
     except KeyboardInterrupt:
-            # Kullanıcı Ctrl+C tuşuna bastığında döngü durur
+            # Kullanıcı Ctrl+C tuşuna bastığında d3öngü durur
             print("Bot manuel olarak durduruldu.")
