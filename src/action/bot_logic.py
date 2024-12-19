@@ -1,13 +1,10 @@
 import time
-from input_handler import hold_key, mouse_click, mouse_move_and_click # Tuş işlemleri için import
-from utils import press_space_while_moving, ice_air, ice_rain, icy_aura, press_space_while_moving_2, handle_captcha
+from input_handling.input_handler import hold_key, mouse_click, mouse_move_and_click # Tuş işlemleri için import
+from functions.utils import handle_captcha
 
 
 def bot_action():
     
-    
-    
-
 
     try:
         

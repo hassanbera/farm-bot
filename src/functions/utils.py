@@ -1,9 +1,9 @@
 
 import pytesseract
-from PIL import ImageGrab
+from PIL import ImageGrab,ImageDraw
 import re
 import time
-from input_handler import hold_key, mouse_move_and_click
+from input_handling.input_handler import hold_key, mouse_move_and_click
 import pytesseract
 
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
@@ -140,3 +140,15 @@ def handle_captcha(bbox=(800, 600, 1200, 800), click_coords=(960, 640)):
             print("CAPTCHA solved and handled successfully.")
         else:
             print("Failed to solve CAPTCHA.")
+
+def visualize_bbox(bbox):
+    """
+    Visualize the bounding box area to confirm its position.
+    Args:
+        bbox: Tuple (X1, Y1, X2, Y2) for the bounding box area.
+    """
+    screenshot = ImageGrab.grab()  # Take a screenshot of the whole screen
+    draw = ImageDraw.Draw(screenshot)
+    draw.rectangle(bbox, outline="red", width=3)  # Draw the bbox in red
+    screenshot.show()  # Open the image with the drawn box
+    print(f"Visualized bbox: {bbox}")
