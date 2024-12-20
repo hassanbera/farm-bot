@@ -26,24 +26,49 @@ def detect_captcha(bbox=(804, 472, 1113, 604), pixel_check=(850, 500), target_co
     return pixel_color == target_color
 
 
-def solve_captcha(bbox=(804,472,1113,604)):
-    """
-    Solves the CAPTCHA by reading and solving the math problem.
-    """
-    screenshot = ImageGrab.grab(bbox=bbox)
-    captcha_text = pytesseract.image_to_string(screenshot)
 
-    # Extract math problem
-    match = re.search(r"(\d+)\s+plus\s+(\d+)|(\d+)\s+multiple\s+(\d+)", captcha_text.lower())
+def solve_captcha(captcha_text):
+    """
+    Solves a math CAPTCHA by detecting and calculating the operation.
+    Supports: plus, multiple, minus, divide.
+    Args:
+        captcha_text (str): The text extracted from the CAPTCHA.
+    Returns:
+        float or None: The result of the calculation, or None if not recognized.
+    """
+    
+    # Extract math problem using regex
+    match = re.search(
+        r"(\d+)\s+plus\s+(\d+)|(\d+)\s+multiple\s+(\d+)|(\d+)\s+minus\s+(\d+)|(\d+)\s+divide\s+(\d+)",
+        captcha_text.lower()
+    )
+
     if match:
         if "plus" in captcha_text.lower():
+            # Extract numbers for addition
             num1, num2 = map(int, match.groups()[:2])
             return num1 + num2
         elif "multiple" in captcha_text.lower():
-            num1, num2 = map(int, match.groups()[2:])
+            # Extract numbers for multiplication
+            num1, num2 = map(int, match.groups()[2:4])
             return num1 * num2
+        elif "minus" in captcha_text.lower():
+            # Extract numbers for subtraction
+            num1, num2 = map(int, match.groups()[4:6])
+            return num1 - num2
+        elif "divide" in captcha_text.lower():
+            # Extract numbers for division
+            num1, num2 = map(int, match.groups()[6:8])
+            if num2 != 0:  # Check for division by zero
+                return num1 / num2
+            else:
+                print("Error: Division by zero!")
+                return None
+
+    # If no match found, log and return None
     print(f"CAPTCHA not recognized: {captcha_text.strip()}")
     return None
+
 
 def handle_captcha(bbox=(804,472,1113,604), click_coords=(960, 640)):
     """
@@ -51,7 +76,8 @@ def handle_captcha(bbox=(804,472,1113,604), click_coords=(960, 640)):
     """
     if detect_captcha(bbox=bbox):
         print("CAPTCHA detected!")
-        answer = solve_captcha(bbox=bbox)
+        captcha_text = pytesseract.image_to_string(ImageGrab.grab(bbox=bbox))
+        answer = solve_captcha(captcha_text)
         if answer is not None:
             for char in str(answer):
                 hold_key(char, 0.1)  # Adjust if `char` isn't directly mappable
@@ -67,7 +93,7 @@ def visualize_bbox(bbox):
     """
     screenshot = ImageGrab.grab()
     draw = ImageDraw.Draw(screenshot)
-    draw.rectangle(bbox, outline="red", width=3)
+    draw.rectangle(bbox, outline="blue", width=3)
     screenshot.show()
     print(f"Visualized bbox: {bbox}")
     print(f"Captured region size: width={bbox[2]-bbox[0]}, height={bbox[3]-bbox[1]}")
