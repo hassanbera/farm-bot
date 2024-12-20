@@ -59,6 +59,7 @@ def mouse_left_click():
     ctypes.windll.user32.SendInput(1, ctypes.pointer(x), ctypes.sizeof(x))
 
 def hold_key(hexKeyCode, duration):
+    print(f"Holding keycode: {hexKeyCode} for {duration} seconds")
     """
     Belirtilen tuşa belirtilen süre boyunca basılı tutar.
     Args:

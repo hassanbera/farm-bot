@@ -39,7 +39,7 @@ def get_pixel_color(bbox, pixel_check):
 
 # Example usage
 bbox = (804, 472, 1113, 604)  # Define your CAPTCHA message box area
-pixel_check = (850, 500)  # The pixel you want to check inside the bbox
+pixel_check = (908, 586)  # The pixel you want to check inside the bbox
 
 color = get_pixel_color(bbox, pixel_check)
 print(f"The color of the pixel at {pixel_check} is: {color}")
